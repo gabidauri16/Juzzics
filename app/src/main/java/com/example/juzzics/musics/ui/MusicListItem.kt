@@ -26,8 +26,7 @@ fun MusicListItem(musicFile: MusicFileModel, onItemClick: (MusicFileModel) -> Un
             .clip(RoundedCornerShape(16.dp))
             .clickable { onItemClick(musicFile) }
             .background(
-                if (musicFile.isPlaying)
-                    MaterialTheme.colorScheme.secondaryContainer
+                if (musicFile.isPlaying) MaterialTheme.colorScheme.secondaryContainer
                 else MaterialTheme.colorScheme.background
             )
     ) {

@@ -1,8 +1,11 @@
 package com.example.juzzics.musics.data.localProvider
 
+import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
 import android.provider.MediaStore
 import com.example.juzzics.musics.domain.model.MusicFileModel
+import kotlinx.coroutines.delay
 
 class MusicLocalProviderImpl(private val context: Context) : MusicLocalProvider {
     override suspend fun getAllLocalMusicFiles(): Result<List<MusicFileModel>> {
@@ -15,6 +18,7 @@ class MusicLocalProviderImpl(private val context: Context) : MusicLocalProvider 
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.ALBUM_ID,
         )
         val cursor = contentResolver.query(uri, projection, selection, null, null)
         val musicFiles = mutableListOf<MusicFileModel>()
@@ -24,7 +28,13 @@ class MusicLocalProviderImpl(private val context: Context) : MusicLocalProvider 
             val artist = cursor.getString(2)
             val album = cursor.getString(3)
             val duration = cursor.getLong(4)
-            musicFiles.add(MusicFileModel(id, title, artist, album, duration))
+            val albumId = cursor.getLong(5)
+
+            val iconUri = ContentUris.withAppendedId(
+                Uri.parse("content://media/external/audio/albumart"), albumId
+            )
+
+            musicFiles.add(MusicFileModel(id, title, artist, album, duration, iconUri))
         }
         cursor?.close()
         return Result.success(musicFiles.sortedBy { it.title })

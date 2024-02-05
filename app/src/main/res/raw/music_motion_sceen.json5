@@ -1,0 +1,104 @@
+{
+  ConstraintSets: {
+    start: {
+      music_list:{
+        start: ['parent', 'start', 16],
+        end: ['parent', 'end', 16],
+        top: ['parent', 0.2],
+        height: '90%',
+      },
+      box: {
+        width: 'spread',
+        height: 'spread',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['music_list', 'bottom', 0],
+        bottom: ['parent', 'bottom'],
+      },
+      now_playing: {
+        top: ['box', 'top', 16],
+        start: ['icon', 'end'],
+      },
+      play_or_stop: {
+        end: ['parent', 'end'],
+        top: ['box', 'top'],
+        bottom: ['parent', 'bottom', 16]
+      },
+      music_name: {
+        height: 'wrap',
+        width: 'spread',
+        start: ['now_playing','start'],
+        end: ['play_or_stop', 'start', -16],
+        top: ['now_playing', 'bottom'],
+        bottom: ['parent', 'bottom', 16],
+      },
+      icon: {
+        height: 'spread',
+        top: ['box', 'top', 16],
+        start: ['parent', 'start', 16],
+        bottom: ['box', 'bottom', 16],
+      }
+    },
+    end: {
+      music_list:{
+        start: ['parent', 'start', 16],
+        end: ['parent', 'end', 16],
+        top: ['parent', 0.2]
+      },
+      box: {
+        width: 'spread',
+        height: 'spread',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['parent', 'top', 0],
+        bottom: ['parent', 'bottom', -16],
+      },
+      now_playing: {
+        alpha: 0,
+        start: ['parent', 'start', 16],
+        top: ['parent', 'top', 16]
+      },
+      play_or_stop: {
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        bottom: ['parent', 'bottom', 100],
+      },
+      music_name: {
+        height: 'wrap',
+        width: 'spread',
+        start: ['icon', 'start'],
+        end: ['icon', 'end'],
+        bottom: ['play_or_stop', 'top', 32],
+      },
+      icon: {
+        width: 'spread',
+        height: 'spread',
+        top: ['parent', 'top', 100],
+        start: ['parent', 'start', 32],
+        end: ['parent', 'end', 32],
+        bottom: ['music_name', 'top', 0],
+      }
+    }
+  },
+  Transitions: {
+    default: {
+      from: 'start',
+      to: 'end',
+//      pathMotionArc: 'startHorizontal',
+      KeyFrames: {
+        KeyAttributes: [
+          {
+            target: ['music_name'],
+            frames: [0, 100],
+            translationY: [0, 40]
+          },
+          {
+            target: ['play_or_stop'],
+            frames: [0, 100],
+            translationY: [40, 0]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.juzzics"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -76,4 +76,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
+
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+    implementation("androidx.wear.compose:compose-material:1.3.0")
+
+    implementation("io.coil-kt:coil-compose:2.2.2")
 }

@@ -4,12 +4,15 @@ import android.app.Application
 import android.content.ContentUris
 import android.media.MediaPlayer
 import android.provider.MediaStore
+import android.util.Log
 import com.example.juzzics.common.base.Action
 import com.example.juzzics.common.base.BaseViewModel
 import com.example.juzzics.common.base.UiEvent
 import com.example.juzzics.common.base.ViewState
 import com.example.juzzics.musics.domain.model.MusicFileModel
 import com.example.juzzics.musics.domain.usecases.GetAllLocalMusicFilesUseCase
+import java.io.Serial
+
 
 class MusicVM(
     getAllLocalMusicFilesUseCase: GetAllLocalMusicFilesUseCase,
@@ -20,6 +23,7 @@ class MusicVM(
         MEDIA_PLAYER to ViewState<MediaPlayer>(),
         CLICKED_MUSIC to ViewState<MusicFileModel>(),
         IS_PLAYING to ViewState<Boolean>(),
+        Scroll_POSISION to ViewState<Int>(),
     )
 ) {
     companion object {
@@ -27,6 +31,7 @@ class MusicVM(
         const val MEDIA_PLAYER = "mediaPlayer"
         const val CLICKED_MUSIC = "clickedMusic"
         const val IS_PLAYING = "isPlaying"
+        const val Scroll_POSISION = "Scroll_POSISION"
     }
 
     init {
@@ -99,6 +104,7 @@ class MusicVM(
                     else -> it - 1
                 }
             }
+            Scroll_POSISION.setData(pos)
             ScrollToPositionUiEvent(pos).emit()
         }
     }

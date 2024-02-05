@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
@@ -85,18 +86,20 @@ abstract class BaseViewModel(
      *  parameter: stateIndex - takes index of corresponding ViewState from States.
      *  @see states
      * */
-    protected suspend inline fun <reified T : Any?> call(
+    protected suspend inline fun <reified T : Any?> CoroutineScope.call(
         response: Result<T>, stateKey: String,
         onError: (Throwable?) -> Unit = {},
         onSuccess: (Result<T>) -> Unit = {},
     ) {
-        if (response.isSuccess) {
-            onSuccess.invoke(response)
-            stateList[stateKey]?.postChange { copy(data = response.getOrNull()) }
-        } else {
-            onError.invoke(response.exceptionOrNull())
-            stateList[stateKey]?.postChange { copy(data = null) }
-            response.exceptionOrNull()?.message?.let { emitEvent(UiEvent.Message(it)) }
+        if (isActive) {
+            if (response.isSuccess) {
+                onSuccess.invoke(response)
+                stateList[stateKey]?.postChange { copy(data = response.getOrNull()) }
+            } else {
+                onError.invoke(response.exceptionOrNull())
+                stateList[stateKey]?.postChange { copy(data = null) }
+                response.exceptionOrNull()?.message?.let { emitEvent(UiEvent.Message(it)) }
+            }
         }
     }
 

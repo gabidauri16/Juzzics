@@ -20,7 +20,8 @@ import kotlinx.coroutines.flow.SharedFlow
 @Composable
 fun BaseActionsHandler(
     uiEvent: SharedFlow<UiEvent>,
-    showLoader: Boolean = true
+    showLoader: Boolean = true,
+    content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
     val loadingState = remember { mutableStateOf(false) }
@@ -33,6 +34,7 @@ fun BaseActionsHandler(
         }
     }
     Loader(loading = loadingState.value)
+    content.invoke()
 }
 
 @Composable
