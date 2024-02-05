@@ -14,7 +14,7 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun MusicProgress(mediaPlayer: MediaPlayer?, seekTo: (Float) -> Unit) {
+fun MusicProgress(modifier: Modifier, mediaPlayer: MediaPlayer?, seekTo: (Float) -> Unit) {
     val progress = remember { mutableFloatStateOf(0f) }
     LaunchedEffect(key1 = mediaPlayer) {
         while (mediaPlayer?.isPlaying == true) {
@@ -25,7 +25,7 @@ fun MusicProgress(mediaPlayer: MediaPlayer?, seekTo: (Float) -> Unit) {
 
     LinearProgressIndicator(
         progress = progress.value,
-        Modifier
+        modifier
             .fillMaxWidth()
             .pointerInput(Unit) {
                 detectTapGestures {

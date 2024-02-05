@@ -20,8 +20,8 @@
         start: ['icon', 'end'],
       },
       play_or_stop: {
-        end: ['parent', 'end'],
-        top: ['box', 'top'],
+        end: ['parent', 'end', 16],
+        top: ['box', 'top', 16],
         bottom: ['parent', 'bottom', 16]
       },
       music_name: {
@@ -33,10 +33,31 @@
         bottom: ['parent', 'bottom', 16],
       },
       icon: {
+        width: 'wrap',
         height: 'spread',
         top: ['box', 'top', 16],
         start: ['parent', 'start', 16],
         bottom: ['box', 'bottom', 16],
+      },
+      bt_prev: {
+        alpha: 0,
+        start: ['play_or_stop', 'start', 0],
+        end: ['parent', 'end'],
+        top: ['box', 'top', 16],
+        bottom: ['parent', 'bottom', 16]
+      },
+      bt_next: {
+        alpha: 0,
+        start: ['play_or_stop', 'start', 0],
+        end: ['parent', 'end'],
+        top: ['box', 'top', 16],
+        bottom: ['parent', 'bottom', 16]
+      },
+      music_progress: {
+        width: 'spread',
+        bottom: ['parent', 'bottom', 8],
+        start: ['parent', 'start', 16],
+        end: ['music_name', 'end', 16],
       }
     },
     end: {
@@ -54,7 +75,7 @@
         bottom: ['parent', 'bottom', -16],
       },
       now_playing: {
-        alpha: 0,
+//        alpha: 0,
         start: ['parent', 'start', 16],
         top: ['parent', 'top', 16]
       },
@@ -74,9 +95,28 @@
         width: 'spread',
         height: 'spread',
         top: ['parent', 'top', 100],
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        bottom: ['music_name', 'top'],
+      },
+      bt_prev: {
+//        alpha: 1,
+        end: ['play_or_stop', 'start', 32],
+        top: ['play_or_stop', 'top', 0],
+        bottom: ['play_or_stop', 'bottom'],
+      },
+      bt_next: {
+//        alpha: 1,
+        start: ['play_or_stop', 'end', 32],
+        top: ['play_or_stop', 'top', 0],
+        bottom: ['play_or_stop', 'bottom']
+      },
+      music_progress: {
+        width: 'spread',
+        height: 10,
+        bottom: ['music_name', 'top', 32],
         start: ['parent', 'start', 32],
         end: ['parent', 'end', 32],
-        bottom: ['music_name', 'top', 0],
       }
     }
   },
@@ -84,20 +124,14 @@
     default: {
       from: 'start',
       to: 'end',
-//      pathMotionArc: 'startHorizontal',
       KeyFrames: {
         KeyAttributes: [
           {
-            target: ['music_name'],
+            target: ['icon'],
             frames: [0, 100],
-            translationY: [0, 40]
-          },
-          {
-            target: ['play_or_stop'],
-            frames: [0, 100],
-            translationY: [40, 0]
+            rotationY: [0, 720],
           }
-        ]
+        ],
       }
     }
   }
