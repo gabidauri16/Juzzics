@@ -1,4 +1,4 @@
-package com.example.juzzics.musics.domain.model
+package com.example.juzzics.features.musics.domain.model
 
 import android.net.Uri
 

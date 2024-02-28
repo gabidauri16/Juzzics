@@ -1,4 +1,4 @@
-package com.example.juzzics.musics.ui
+package com.example.juzzics.features.musics.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juzzics.common.base.extensions.toMusicDuration
-import com.example.juzzics.musics.domain.model.MusicFileModel
+import com.example.juzzics.features.musics.domain.model.MusicFileModel
 
 @Composable
 fun MusicListItem(musicFile: MusicFileModel, onItemClick: (MusicFileModel) -> Unit) {

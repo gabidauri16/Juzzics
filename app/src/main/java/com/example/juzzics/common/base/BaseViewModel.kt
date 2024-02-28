@@ -13,6 +13,7 @@ import com.example.juzzics.common.base.extensions.takeAs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -122,14 +123,21 @@ abstract class BaseViewModel(
     fun <T> getData(stateKey: String) = remember { this.stateList[stateKey] }?.takeAs<T>()
     fun <T> data(stateKey: String) = stateList[stateKey]?.takeAs<T>()
     fun <T> String.typeOf() = stateList[this]?.takeAs<T>()
+}
 
-    @SuppressLint("ComposableNaming")
-    @Composable
-    fun onEvent(onCollect: suspend (UiEvent) -> Unit) {
-        LaunchedEffect(true) {
-            uiEvent.collect {
-                onCollect(it)
-            }
+@SuppressLint("ComposableNaming")
+@Composable
+fun SharedFlow<UiEvent>.listen(onCollect: suspend (UiEvent) -> Unit) {
+    LaunchedEffect(true) {
+        collect {
+            onCollect(it)
         }
     }
 }
+
+@Composable
+fun <T> Map<String, MutableState<ViewState<Any>>>.getData(stateKey: String) =
+    remember { this[stateKey]?.takeAs<T>() }
+
+fun <T> Map<String, MutableState<ViewState<Any>>>.data(stateKey: String) =
+    this[stateKey]?.takeAs<T>()

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalWearMaterialApi::class)
 
-package com.example.juzzics.musics.ui
+package com.example.juzzics.features.musics.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeAnimationMode
@@ -17,27 +17,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
@@ -55,19 +51,28 @@ import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import coil.compose.AsyncImage
 import com.example.juzzics.R
+import com.example.juzzics.common.base.Action
+import com.example.juzzics.common.base.UiEvent
+import com.example.juzzics.common.base.ViewState
+import com.example.juzzics.common.base.listen
+import com.example.juzzics.common.base.data
 import com.example.juzzics.common.base.extensions.returnIfNull
+import com.example.juzzics.common.base.getData
 import com.example.juzzics.common.uiComponents.SimpleFAB
-import com.example.juzzics.musics.domain.model.MusicFileModel
-import org.koin.androidx.compose.koinViewModel
+import com.example.juzzics.features.musics.domain.model.MusicFileModel
+import kotlinx.coroutines.flow.SharedFlow
 import java.util.EnumSet
-
 
 @OptIn(
     ExperimentalMotionApi::class, ExperimentalFoundationApi::class,
     ExperimentalWearMaterialApi::class
 )
 @Composable
-fun MusicsScreen(vm: MusicVM = koinViewModel()) {
+fun MusicsScreen(
+    states: Map<String, MutableState<ViewState<Any>>>,
+    uiEvent: SharedFlow<UiEvent>,
+    onAction: (Action) -> Unit
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -78,10 +83,10 @@ fun MusicsScreen(vm: MusicVM = koinViewModel()) {
             val lazyListState = rememberLazyListState()
             LaunchedEffect(true) {
                 lazyListState.animateScrollToItem(
-                    vm.data<Int>(stateKey = MusicVM.Scroll_POSISION) ?: 0
+                    states.data<Int>(stateKey = MusicVM.Scroll_POSISION) ?: 0
                 )
             }
-            vm.onEvent {
+            uiEvent.listen {
                 when (it) {
                     is MusicVM.ScrollToPositionUiEvent -> lazyListState.animateScrollToItem(it.position)
                 }
@@ -93,7 +98,6 @@ fun MusicsScreen(vm: MusicVM = koinViewModel()) {
 
             val motionProgress = (swipeAbleState.offset.value / componentHeight)
             val context = LocalContext.current
-
 
             val motionScene = remember {
                 context.resources
@@ -112,11 +116,14 @@ fun MusicsScreen(vm: MusicVM = koinViewModel()) {
                         componentHeight = size.height.toFloat()
                     }
             ) {
+                val clickedMusic = states.getData<MusicFileModel>(MusicVM.CLICKED_MUSIC)
+                val isPlaying = states.getData(MusicVM.IS_PLAYING) ?: false
+
                 MusicList(
                     modifier = Modifier.layoutId("music_list"),
-                    musicFiles = vm.getData<List<MusicFileModel>>(MusicVM.MUSIC_LIST),
+                    musicFiles = states.getData<List<MusicFileModel>>(MusicVM.MUSIC_LIST),
                     listState = lazyListState
-                ) { vm.onAction(MusicVM.PlayMusicAction(it)) }
+                ) { onAction(MusicVM.PlayMusicAction(it)) }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -130,8 +137,6 @@ fun MusicsScreen(vm: MusicVM = koinViewModel()) {
                         )
                         .layoutId("box")
                 )
-                val clickedMusic = vm.getData<MusicFileModel>(MusicVM.CLICKED_MUSIC)
-
                 Text(
                     text = "Now Playing:",
                     modifier = Modifier
@@ -162,29 +167,28 @@ fun MusicsScreen(vm: MusicVM = koinViewModel()) {
                         ),
                     contentScale = ContentScale.Fit,
                 )
-                val isPlaying = vm.getData(MusicVM.IS_PLAYING) ?: false
                 MusicProgress(
                     modifier = Modifier.layoutId("music_progress"),
-                    mediaPlayer = vm.getData(MusicVM.MEDIA_PLAYER),
-                    seekTo = { vm.onAction(MusicVM.SeekToAction(it)) })
+                    mediaPlayer = states.getData(MusicVM.MEDIA_PLAYER),
+                    seekTo = { onAction(MusicVM.SeekToAction(it)) })
 
                 SimpleFAB(
                     modifier = Modifier.layoutId("bt_prev"),
                     text = "Prev",
                     image = Icons.AutoMirrored.Filled.KeyboardArrowLeft
-                ) { vm.onAction(MusicVM.PlayPrevAction) }
+                ) { onAction(MusicVM.PlayPrevAction) }
 
                 SimpleFAB(
                     modifier = Modifier.layoutId("bt_next"),
                     text = "Next",
                     image = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                ) { vm.onAction(MusicVM.PlayNextAction) }
+                ) { onAction(MusicVM.PlayNextAction) }
 
                 SimpleFAB(
                     modifier = Modifier.layoutId("play_or_stop"),
                     image = if (isPlaying) Icons.Filled.Warning else Icons.Filled.PlayArrow,
                     text = if (isPlaying) "Pause" else "Play"
-                ) { vm.onAction(MusicVM.PlayOrPauseAction) }
+                ) { onAction(MusicVM.PlayOrPauseAction) }
             }
         }
     }

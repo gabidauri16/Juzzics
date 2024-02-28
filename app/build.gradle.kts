@@ -82,4 +82,6 @@ dependencies {
     implementation("androidx.wear.compose:compose-material:1.3.0")
 
     implementation("io.coil-kt:coil-compose:2.2.2")
+
+    implementation ("com.google.code.gson:gson:2.10")
 }

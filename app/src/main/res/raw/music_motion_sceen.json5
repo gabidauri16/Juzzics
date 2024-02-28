@@ -1,5 +1,13 @@
 {
   ConstraintSets: {
+    beforeStart: {
+      music_list:{
+        start: ['parent', 'start', 16],
+        end: ['parent', 'end', 16],
+        top: ['parent', 0.2],
+        height: '100%',
+      }
+    },
     start: {
       music_list:{
         start: ['parent', 'start', 16],
@@ -121,6 +129,10 @@
     }
   },
   Transitions: {
+    starting: {
+      from: 'beforeStart',
+      to: 'start',
+    },
     default: {
       from: 'start',
       to: 'end',

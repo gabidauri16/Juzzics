@@ -1,4 +1,4 @@
-package com.example.juzzics.musics.ui
+package com.example.juzzics.features.musics.ui
 
 import android.app.Application
 import android.content.ContentUris
@@ -9,9 +9,8 @@ import com.example.juzzics.common.base.Action
 import com.example.juzzics.common.base.BaseViewModel
 import com.example.juzzics.common.base.UiEvent
 import com.example.juzzics.common.base.ViewState
-import com.example.juzzics.musics.domain.model.MusicFileModel
-import com.example.juzzics.musics.domain.usecases.GetAllLocalMusicFilesUseCase
-import java.io.Serial
+import com.example.juzzics.features.musics.domain.model.MusicFileModel
+import com.example.juzzics.features.musics.domain.usecases.GetAllLocalMusicFilesUseCase
 
 
 class MusicVM(
@@ -35,6 +34,7 @@ class MusicVM(
     }
 
     init {
+        Log.d("myLog", "init MusicVm")
         launch { call(getAllLocalMusicFilesUseCase(), MUSIC_LIST) }
     }
 

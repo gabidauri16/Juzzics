@@ -1,4 +1,4 @@
-package com.example.juzzics.musics.ui
+package com.example.juzzics.features.musics.ui
 
 import android.media.MediaPlayer
 import androidx.compose.foundation.gestures.detectTapGestures
