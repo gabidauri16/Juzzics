@@ -50,6 +50,10 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
+}
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -75,7 +79,7 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
 
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 

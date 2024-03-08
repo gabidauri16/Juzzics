@@ -1,8 +1,8 @@
 package com.example.juzzics.common.base.extensions
 
 import androidx.compose.runtime.MutableState
-import com.example.juzzics.common.base.ViewState
-import com.example.juzzics.common.base.BaseViewModel
+import com.example.juzzics.common.base.viewModel.ViewState
+import com.example.juzzics.common.base.viewModel.BaseViewModel
 
 /** post change to a mutableState of something,
  *  for example data class that contains TextField values. */

@@ -18,7 +18,11 @@ fun BottomNavigation(navController: NavHostController) {
         }
         composable(Screen.MusicsScreen.route) {
             val vm: MusicVM = koinViewModel()
-            MusicsScreen(vm.stateList, vm.uiEvent, vm::onAction)
+            MusicsScreen(
+                states = vm.stateList,
+                uiEvent = vm.uiEvent,
+                onAction = vm::onAction
+            )
         }
         composable(Screen.PlaylistsScreen.route) {
             PlaylistsScreen()

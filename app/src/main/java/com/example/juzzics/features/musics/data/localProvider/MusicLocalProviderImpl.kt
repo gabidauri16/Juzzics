@@ -4,8 +4,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.example.juzzics.features.musics.domain.model.MusicFileModel
-import kotlinx.coroutines.delay
+import com.example.juzzics.features.musics.data.model.MusicFileDto
 
 class MusicLocalProviderImpl(private val context: Context) : MusicLocalProvider {
     override suspend fun getAllLocalMusicFiles() = runCatching {
@@ -21,7 +20,7 @@ class MusicLocalProviderImpl(private val context: Context) : MusicLocalProvider 
             MediaStore.Audio.Media.ALBUM_ID,
         )
         val cursor = contentResolver.query(uri, projection, selection, null, null)
-        val musicFiles = mutableListOf<MusicFileModel>()
+        val musicFiles = mutableListOf<MusicFileDto>()
         while (cursor?.moveToNext() == true) {
             val id = cursor.getLong(0)
             val title = cursor.getString(1)
@@ -34,7 +33,7 @@ class MusicLocalProviderImpl(private val context: Context) : MusicLocalProvider 
                 Uri.parse("content://media/external/audio/albumart"), albumId
             )
 
-            musicFiles.add(MusicFileModel(id, title, artist, album, duration, iconUri))
+            musicFiles.add(MusicFileDto(id, title, artist, album, duration, iconUri))
         }
         cursor?.close()
         musicFiles.sortedBy { it.title }

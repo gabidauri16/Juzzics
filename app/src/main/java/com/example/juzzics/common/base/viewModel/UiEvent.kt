@@ -1,4 +1,4 @@
-package com.example.juzzics.common.base
+package com.example.juzzics.common.base.viewModel
 
 interface UiEvent {
     data class Message(val msg: String) : UiEvent

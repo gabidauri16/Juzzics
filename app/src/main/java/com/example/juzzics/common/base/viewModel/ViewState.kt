@@ -1,4 +1,4 @@
-package com.example.juzzics.common.base
+package com.example.juzzics.common.base.viewModel
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

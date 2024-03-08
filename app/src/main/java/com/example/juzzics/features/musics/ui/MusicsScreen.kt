@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,17 +50,32 @@ import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import coil.compose.AsyncImage
 import com.example.juzzics.R
-import com.example.juzzics.common.base.Action
-import com.example.juzzics.common.base.UiEvent
-import com.example.juzzics.common.base.ViewState
-import com.example.juzzics.common.base.listen
-import com.example.juzzics.common.base.data
+import com.example.juzzics.common.base.viewModel.Action
+import com.example.juzzics.common.base.viewModel.UiEvent
+import com.example.juzzics.common.base.viewModel.ViewState
 import com.example.juzzics.common.base.extensions.returnIfNull
-import com.example.juzzics.common.base.getData
+import com.example.juzzics.common.base.extensions.with2
+import com.example.juzzics.common.base.viewModel.listen
+import com.example.juzzics.common.base.viewModel.state
 import com.example.juzzics.common.uiComponents.SimpleFAB
-import com.example.juzzics.features.musics.domain.model.MusicFileModel
+import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import kotlinx.coroutines.flow.SharedFlow
 import java.util.EnumSet
+@Composable
+fun MusicList(
+    modifier: Modifier = Modifier,
+    musicFiles: List<MusicFileUi>?,
+    listState: LazyListState,
+    onItemClick: (MusicFileUi) -> Unit
+) {
+    LazyColumn(modifier = modifier, state = listState) {
+        musicFiles?.let {
+            items(it) { musicFile ->
+                MusicListItem(musicFile, onItemClick)
+            }
+        }
+    }
+}
 
 @OptIn(
     ExperimentalMotionApi::class, ExperimentalFoundationApi::class,
@@ -73,138 +87,117 @@ fun MusicsScreen(
     uiEvent: SharedFlow<UiEvent>,
     onAction: (Action) -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
+    with2(states, MusicVM) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
         ) {
-            val lazyListState = rememberLazyListState()
-            LaunchedEffect(true) {
-                lazyListState.animateScrollToItem(
-                    states.data<Int>(stateKey = MusicVM.Scroll_POSISION) ?: 0
-                )
-            }
-            uiEvent.listen {
-                when (it) {
-                    is MusicVM.ScrollToPositionUiEvent -> lazyListState.animateScrollToItem(it.position)
-                }
-            }
-
-            var componentHeight by remember { mutableStateOf(1000f) }
-            val swipeAbleState = rememberSwipeableState("Bottom")
-            val anchors = mapOf(0f to "Bottom", componentHeight to "Top")
-
-            val motionProgress = (swipeAbleState.offset.value / componentHeight)
-            val context = LocalContext.current
-
-            val motionScene = remember {
-                context.resources
-                    .openRawResource(R.raw.music_motion_sceen)
-                    .readBytes()
-                    .decodeToString()
-            }
-            MotionLayout(
-                motionScene = MotionScene(content = motionScene),
-                progress = motionProgress,
-                debug = EnumSet.of(MotionLayoutDebugFlags.NONE),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .onSizeChanged { size ->
-                        componentHeight = size.height.toFloat()
-                    }
+            Column(
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                val clickedMusic = states.getData<MusicFileModel>(MusicVM.CLICKED_MUSIC)
-                val isPlaying = states.getData(MusicVM.IS_PLAYING) ?: false
+                val lazyListState = rememberLazyListState()
+                uiEvent.listen {
+                    when (it) {
+                        is MusicVM.ScrollToPositionUiEvent -> lazyListState.animateScrollToItem(it.position)
+                    }
+                }
 
-                MusicList(
-                    modifier = Modifier.layoutId("music_list"),
-                    musicFiles = states.getData<List<MusicFileModel>>(MusicVM.MUSIC_LIST),
-                    listState = lazyListState
-                ) { onAction(MusicVM.PlayMusicAction(it)) }
-                Box(
+                var componentHeight by remember { mutableStateOf(1000f) }
+                val swipeAbleState = rememberSwipeableState("Bottom")
+                val anchors = mapOf(0f to "Bottom", componentHeight to "Top")
+
+                val motionProgress = (swipeAbleState.offset.value / componentHeight)
+                val context = LocalContext.current
+
+                val motionScene = remember {
+                    context.resources
+                        .openRawResource(R.raw.music_motion_sceen)
+                        .readBytes()
+                        .decodeToString()
+                }
+                MotionLayout(
+                    motionScene = MotionScene(content = motionScene),
+                    progress = motionProgress,
+                    debug = EnumSet.of(MotionLayoutDebugFlags.NONE),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.DarkGray)
-                        .swipeable(
-                            state = swipeAbleState,
-                            anchors = anchors,
-                            reverseDirection = true,
-                            thresholds = { _, _ -> FractionalThreshold(0.3f) },
-                            orientation = Orientation.Vertical
-                        )
-                        .layoutId("box")
-                )
-                Text(
-                    text = "Now Playing:",
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .layoutId("now_playing"),
-                )
-                Text(
-                    text = clickedMusic?.title ?: "No song playing",
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .basicMarquee(
-                            animationMode = MarqueeAnimationMode.Immediately,
-                            delayMillis = 1000
-                        )
-                        .layoutId("music_name"),
-                    fontSize = 18.sp
-                )
-                AsyncImage(
-                    model = clickedMusic?.icon.returnIfNull { R.drawable.ic_launcher_foreground },
-                    contentDescription = "music icon",
-                    placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
-                    modifier = Modifier
-                        .layoutId("icon")
-                        .aspectRatio(
-                            //if (swipeAbleState.currentValue == "Bottom") 2f else 0.8f,//todo: animate
-                            1f,
-                            true
-                        ),
-                    contentScale = ContentScale.Fit,
-                )
-                MusicProgress(
-                    modifier = Modifier.layoutId("music_progress"),
-                    mediaPlayer = states.getData(MusicVM.MEDIA_PLAYER),
-                    seekTo = { onAction(MusicVM.SeekToAction(it)) })
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .onSizeChanged { size -> componentHeight = size.height.toFloat() }
+                ) {
+                    val clickedMusic = CLICKED_MUSIC.state<MusicFileUi>()
+                    val isPlaying = IS_PLAYING.state() ?: false
 
-                SimpleFAB(
-                    modifier = Modifier.layoutId("bt_prev"),
-                    text = "Prev",
-                    image = Icons.AutoMirrored.Filled.KeyboardArrowLeft
-                ) { onAction(MusicVM.PlayPrevAction) }
+                    MusicList(
+                        modifier = Modifier.layoutId("music_list"),
+                        musicFiles = MUSIC_LIST.state(),
+                        listState = lazyListState
+                    ) { onAction(MusicVM.PlayMusicAction(it)) }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.DarkGray)
+                            .swipeable(
+                                state = swipeAbleState,
+                                anchors = anchors,
+                                reverseDirection = true,
+                                thresholds = { _, _ -> FractionalThreshold(0.3f) },
+                                orientation = Orientation.Vertical
+                            )
+                            .layoutId("box")
+                    )
+                    Text(
+                        text = "Now Playing:",
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .layoutId("now_playing"),
+                    )
+                    Text(
+                        text = clickedMusic?.title ?: "No song playing",
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .basicMarquee(
+                                animationMode = MarqueeAnimationMode.Immediately,
+                                delayMillis = 1000
+                            )
+                            .layoutId("music_name"),
+                        fontSize = 18.sp
+                    )
+                    AsyncImage(
+                        model = clickedMusic?.icon.returnIfNull { R.drawable.ic_launcher_foreground },
+                        contentDescription = "music icon",
+                        placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
+                        modifier = Modifier
+                            .layoutId("icon")
+                            .aspectRatio(
+                                //if (swipeAbleState.currentValue == "Bottom") 2f else 0.8f,//todo: animate
+                                1f,
+                                true
+                            ),
+                        contentScale = ContentScale.Fit,
+                    )
+                    MusicProgress(
+                        modifier = Modifier.layoutId("music_progress"),
+                        mediaPlayer = MEDIA_PLAYER.state(),
+                        seekTo = { onAction(MusicVM.SeekToAction(it)) })
 
-                SimpleFAB(
-                    modifier = Modifier.layoutId("bt_next"),
-                    text = "Next",
-                    image = Icons.AutoMirrored.Filled.KeyboardArrowRight
-                ) { onAction(MusicVM.PlayNextAction) }
+                    SimpleFAB(
+                        modifier = Modifier.layoutId("bt_prev"),
+                        text = "Prev",
+                        image = Icons.AutoMirrored.Filled.KeyboardArrowLeft
+                    ) { onAction(MusicVM.PlayPrevAction) }
 
-                SimpleFAB(
-                    modifier = Modifier.layoutId("play_or_stop"),
-                    image = if (isPlaying) Icons.Filled.Warning else Icons.Filled.PlayArrow,
-                    text = if (isPlaying) "Pause" else "Play"
-                ) { onAction(MusicVM.PlayOrPauseAction) }
-            }
-        }
-    }
-}
+                    SimpleFAB(
+                        modifier = Modifier.layoutId("bt_next"),
+                        text = "Next",
+                        image = Icons.AutoMirrored.Filled.KeyboardArrowRight
+                    ) { onAction(MusicVM.PlayNextAction) }
 
-@Composable
-fun MusicList(
-    modifier: Modifier = Modifier,
-    musicFiles: List<MusicFileModel>?,
-    listState: LazyListState,
-    onItemClick: (MusicFileModel) -> Unit
-) {
-    LazyColumn(modifier = modifier, state = listState) {
-        musicFiles?.let {
-            items(it) { musicFile ->
-                MusicListItem(musicFile, onItemClick)
+                    SimpleFAB(
+                        modifier = Modifier.layoutId("play_or_stop"),
+                        image = if (isPlaying) Icons.Filled.Warning else Icons.Filled.PlayArrow,
+                        text = if (isPlaying) "Pause" else "Play"
+                    ) { onAction(MusicVM.PlayOrPauseAction) }
+                }
             }
         }
     }

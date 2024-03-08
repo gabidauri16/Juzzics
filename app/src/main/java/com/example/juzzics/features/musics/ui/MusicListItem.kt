@@ -16,10 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juzzics.common.base.extensions.toMusicDuration
-import com.example.juzzics.features.musics.domain.model.MusicFileModel
+import com.example.juzzics.features.musics.ui.model.MusicFileUi
 
 @Composable
-fun MusicListItem(musicFile: MusicFileModel, onItemClick: (MusicFileModel) -> Unit) {
+fun MusicListItem(musicFile: MusicFileUi, onItemClick: (MusicFileUi) -> Unit) {
     Column(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp)

@@ -1,11 +1,7 @@
-package com.example.juzzics.common.base
+package com.example.juzzics.common.base.viewModel
 
-import android.annotation.SuppressLint
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.juzzics.common.base.extensions.postChange
@@ -13,7 +9,6 @@ import com.example.juzzics.common.base.extensions.takeAs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -108,9 +103,24 @@ abstract class BaseViewModel(
         stateList[keyString]?.postChange { copy(value) }
     }
 
-    fun <T> String.setData(value: T) {
+    /** set value to a state by calling this function on "StateKey" String */
+    infix fun <T> String.setValue(value: T) {
         stateList[this]?.postChange { copy(value) }
     }
+
+    /** set value to a state with corresponding "stateKey" by calling this function on value itself */
+    infix fun <T> T.saveIn(stateKey: String) {
+        val existingValue = stateList[stateKey]
+        if (existingValue != null) {
+            stateKey.setValue(this)
+        } else {
+            stateList[stateKey]?.postChange { copy(this) }
+        }
+    }
+
+    /** set value to a state with corresponding "stateKey" by calling this function on value itself */
+    infix fun <T> T.saveInStateOf(stateKey: String) = this.saveIn(stateKey)
+
 
     /** launches a coroutine and emits Action */
     protected fun <T : UiEvent> T.emit() = viewModelScope.launch { _uiEvent.emit(this@emit) }
@@ -118,26 +128,10 @@ abstract class BaseViewModel(
     /** use inside coroutineScope to emit Action */
     protected suspend fun emitEvent(uiEvent: UiEvent) = this._uiEvent.emit(uiEvent)
 
+
     /** returns state data by stateIndex */
-    @Composable
-    fun <T> getData(stateKey: String) = remember { this.stateList[stateKey] }?.takeAs<T>()
-    fun <T> data(stateKey: String) = stateList[stateKey]?.takeAs<T>()
     fun <T> String.typeOf() = stateList[this]?.takeAs<T>()
+
+    /** returns state data by stateIndex */
+    fun <T> String.state() = stateList[this]?.takeAs<T>()
 }
-
-@SuppressLint("ComposableNaming")
-@Composable
-fun SharedFlow<UiEvent>.listen(onCollect: suspend (UiEvent) -> Unit) {
-    LaunchedEffect(true) {
-        collect {
-            onCollect(it)
-        }
-    }
-}
-
-@Composable
-fun <T> Map<String, MutableState<ViewState<Any>>>.getData(stateKey: String) =
-    remember { this[stateKey]?.takeAs<T>() }
-
-fun <T> Map<String, MutableState<ViewState<Any>>>.data(stateKey: String) =
-    this[stateKey]?.takeAs<T>()

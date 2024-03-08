@@ -14,11 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.juzzics.common.base.viewModel.UiEvent
 import kotlinx.coroutines.flow.SharedFlow
 
 /** handles showing message and showing loader. */
 @Composable
-fun BaseActionsHandler(
+fun BaseUiEventHandler(
     uiEvent: SharedFlow<UiEvent>,
     showLoader: Boolean = true,
     content: @Composable () -> Unit

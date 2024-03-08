@@ -2,7 +2,7 @@ package com.example.juzzics.features.musics.domain.model
 
 import android.net.Uri
 
-data class MusicFileModel(
+data class MusicFileDomain(
     val id: Long,
     val title: String?,
     val artist: String?,
