@@ -24,7 +24,7 @@ class MusicVM(
         MEDIA_PLAYER to ViewState<MediaPlayer>(),
         CLICKED_MUSIC to ViewState<MusicFileUi>(),
         IS_PLAYING to ViewState<Boolean>(),
-        SCROLL_POSISION to ViewState<Int>(),
+        SCROLL_POSITION to ViewState<Int>(),
     )
 ) {
     companion object {
@@ -32,7 +32,7 @@ class MusicVM(
         const val MEDIA_PLAYER = "mediaPlayer"
         const val CLICKED_MUSIC = "clickedMusic"
         const val IS_PLAYING = "isPlaying"
-        const val SCROLL_POSISION = "Scroll_POSISION"
+        const val SCROLL_POSITION = "Scroll_POSISION"
     }
 
     init {
@@ -102,7 +102,7 @@ class MusicVM(
                     else -> it - 1
                 }
             }
-            SCROLL_POSISION.setValue(pos)
+            SCROLL_POSITION.setValue(pos)
             ScrollToPositionUiEvent(pos).emit()
         }
     }

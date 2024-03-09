@@ -16,7 +16,7 @@ fun <T> Map<String, MutableState<ViewState<Any>>>.getState(stateKey: String) =
 /** gets state by stateKey in Composable functions if in context of [BaseState]*/
 context (BaseState)
 @Composable
-fun <T> String.state() = remember { this@BaseState[this]?.takeAs<T>() }
+fun <T> String.state() = remember { this@BaseState[this@state]?.takeAs<T>() }
 
 
 /** gets state by stateKey in normal functions*/
@@ -25,4 +25,4 @@ fun <T> Map<String, MutableState<ViewState<Any>>>.getStateValue(stateKey: String
 
 /** gets state by stateKey in normal functions if in context of [BaseState]*/
 context (BaseState)
-fun <T> String.stateValue() = this@BaseState[this]?.takeAs<T>()
+fun <T> String.stateValue() = this@BaseState[this@stateValue]?.takeAs<T>()

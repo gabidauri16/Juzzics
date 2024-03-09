@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.juzzics.features.home.HomeScreen
+import com.example.juzzics.features.home.HomeVM
 import com.example.juzzics.features.musics.ui.MusicVM
 import com.example.juzzics.features.musics.ui.MusicsScreen
 import com.example.juzzics.features.playlists.PlaylistsScreen
@@ -14,7 +15,8 @@ import org.koin.androidx.compose.koinViewModel
 fun BottomNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.HomeScreen.route) {
         composable(Screen.HomeScreen.route) {
-            HomeScreen()
+            val vm: HomeVM = koinViewModel()
+            HomeScreen(vm.stateList, vm.uiEvent, vm::onAction)
         }
         composable(Screen.MusicsScreen.route) {
             val vm: MusicVM = koinViewModel()
