@@ -90,10 +90,10 @@ abstract class BaseViewModel(
         if (isActive) {
             if (response.isSuccess) {
                 onSuccess.invoke(response)
-                stateList[stateKey]?.postChange { copy(data = response.getOrNull()) }
+                response.getOrNull().saveIn(stateKey)
             } else {
                 onError.invoke(response.exceptionOrNull())
-                stateList[stateKey]?.postChange { copy(data = null) }
+                stateKey.setValue(null)
                 response.exceptionOrNull()?.message?.let { emitEvent(UiEvent.Message(it)) }
             }
         }
@@ -105,17 +105,12 @@ abstract class BaseViewModel(
 
     /** set value to a state by calling this function on "StateKey" String */
     infix fun <T> String.setValue(value: T) {
-        stateList[this]?.postChange { copy(value) }
+        updateState(this, value)
     }
 
     /** set value to a state with corresponding "stateKey" by calling this function on value itself */
     infix fun <T> T.saveIn(stateKey: String) {
-        val existingValue = stateList[stateKey]
-        if (existingValue != null) {
-            stateKey.setValue(this)
-        } else {
-            stateList[stateKey]?.postChange { copy(this) }
-        }
+        updateState(stateKey, this)
     }
 
     /** set value to a state with corresponding "stateKey" by calling this function on value itself */

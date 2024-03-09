@@ -11,12 +11,12 @@ typealias BaseState = Map<String, MutableState<ViewState<Any>>>
 
 @Composable
 fun <T> Map<String, MutableState<ViewState<Any>>>.getState(stateKey: String) =
-    remember { this[stateKey]?.takeAs<T>() }
+    remember { this[stateKey] }?.takeAs<T>()
 
 /** gets state by stateKey in Composable functions if in context of [BaseState]*/
 context (BaseState)
 @Composable
-fun <T> String.state() = remember { this@BaseState[this@state]?.takeAs<T>() }
+fun <T> String.state(): T? = remember { this@BaseState[this@state] }?.takeAs<T>()
 
 
 /** gets state by stateKey in normal functions*/
