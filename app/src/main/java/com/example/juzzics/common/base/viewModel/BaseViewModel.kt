@@ -78,8 +78,8 @@ abstract class BaseViewModel(
 
     /** makes serviceCall and updates corresponding State.
      *
-     *  parameter: response - takes serviceCall that returns Result<YourServiceCallResponseModel>.
-     *  parameter: stateIndex - takes index of corresponding ViewState from States.
+     *  parameter: [response] - takes serviceCall that returns Result<YourServiceCallResponseModel>.
+     *  parameter: [stateKey] - takes index of corresponding ViewState from States.
      *  @see states
      * */
     protected suspend inline fun <reified T : Any?> CoroutineScope.call(
@@ -124,9 +124,9 @@ abstract class BaseViewModel(
     protected suspend fun emitEvent(uiEvent: UiEvent) = this._uiEvent.emit(uiEvent)
 
 
-    /** returns state data by stateIndex */
+    /** returns state data by stateKey */
     fun <T> String.typeOf() = stateList[this]?.takeAs<T>()
 
-    /** returns state data by stateIndex */
+    /** returns state data by stateKey */
     fun <T> String.state() = stateList[this]?.takeAs<T>()
 }
