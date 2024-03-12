@@ -1,4 +1,4 @@
-package com.example.juzzics.features.musics.domain.usecases.vmLogics
+package com.example.juzzics.features.musics.ui.vm.logics
 
 import android.app.Application
 import android.content.ContentUris
@@ -11,11 +11,7 @@ import com.example.juzzics.features.musics.ui.model.MusicFileUi
 
 
 class PlayMusicLogic : ViewModelsLogic {
-    operator fun invoke(
-        vm: MusicVM,
-        musicFile: MusicFileUi?,
-        context: Application
-    ) {
+    operator fun invoke(vm: MusicVM, musicFile: MusicFileUi?, context: Application) {
         vm.andWith(MusicVM) {
             val mediaPlayer = MEDIA_PLAYER.state<MediaPlayer>()
             val musicList = MUSIC_LIST.state<List<MusicFileUi>>()

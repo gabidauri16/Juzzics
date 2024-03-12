@@ -8,8 +8,8 @@ import com.example.juzzics.common.base.viewModel.BaseViewModel
 import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
 import com.example.juzzics.features.musics.domain.usecases.GetAllLocalMusicFilesUseCase
-import com.example.juzzics.features.musics.domain.usecases.vmLogics.PlayMusicLogic
-import com.example.juzzics.features.musics.domain.usecases.vmLogics.PlayNextOrPrevLogic
+import com.example.juzzics.features.musics.ui.vm.logics.PlayMusicLogic
+import com.example.juzzics.features.musics.ui.vm.logics.PlayNextOrPrevLogic
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import com.example.juzzics.features.musics.ui.model.toUi
 

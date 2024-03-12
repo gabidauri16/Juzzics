@@ -1,4 +1,4 @@
-package com.example.juzzics.features.musics.domain.usecases.vmLogics
+package com.example.juzzics.features.musics.ui.vm.logics
 
 import com.example.juzzics.common.base.extensions.andWith
 import com.example.juzzics.common.base.viewModel.ViewModelsLogic
