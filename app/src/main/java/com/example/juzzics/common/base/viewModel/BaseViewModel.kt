@@ -9,17 +9,16 @@ import com.example.juzzics.common.base.extensions.takeAs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
+
 abstract class BaseViewModel(
     val states: Map<String, Any>
 ) : ViewModel() {
-    protected val _uiEvent = MutableSharedFlow<UiEvent>()
-    val uiEvent = _uiEvent.asSharedFlow()
+    val uiEvent = MutableSharedFlow<UiEvent>()
 
     /** for Compose */
     val stateList = states.map { it.key to it.value.createState() }.toMap()
@@ -118,11 +117,10 @@ abstract class BaseViewModel(
 
 
     /** launches a coroutine and emits Action */
-    protected fun <T : UiEvent> T.emit() = viewModelScope.launch { _uiEvent.emit(this@emit) }
+    protected fun <T : UiEvent> T.emit() = viewModelScope.launch { uiEvent.emit(this@emit) }
 
     /** use inside coroutineScope to emit Action */
-    protected suspend fun emitEvent(uiEvent: UiEvent) = this._uiEvent.emit(uiEvent)
-
+    protected suspend fun emitEvent(uiEvent: UiEvent) = this.uiEvent.emit(uiEvent)
 
     /** returns state data by stateKey */
     fun <T> String.typeOf() = stateList[this]?.takeAs<T>()

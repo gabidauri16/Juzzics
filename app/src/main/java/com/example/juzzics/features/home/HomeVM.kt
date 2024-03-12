@@ -2,6 +2,7 @@ package com.example.juzzics.features.home
 
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.BaseViewModel
+import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
 
 class HomeVM : BaseViewModel(
@@ -21,8 +22,9 @@ class HomeVM : BaseViewModel(
 
     private fun makeCall() {
         launch { call(Result.success("Giorgi Gabidauri"), TEST) }
+        ToastMsg("got Name").emit()
     }
 
     object CallAction : Action
-
+    data class ToastMsg(val msg: String) : UiEvent
 }

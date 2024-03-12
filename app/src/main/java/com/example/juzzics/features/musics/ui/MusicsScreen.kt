@@ -50,17 +50,20 @@ import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import coil.compose.AsyncImage
 import com.example.juzzics.R
+import com.example.juzzics.common.base.extensions.returnIfNull
+import com.example.juzzics.common.base.extensions.with2
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
-import com.example.juzzics.common.base.extensions.returnIfNull
-import com.example.juzzics.common.base.extensions.with2
 import com.example.juzzics.common.base.viewModel.listen
 import com.example.juzzics.common.base.viewModel.state
 import com.example.juzzics.common.uiComponents.SimpleFAB
+import com.example.juzzics.features.musics.ui.components.MusicListItem
+import com.example.juzzics.features.musics.ui.components.MusicProgress
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import kotlinx.coroutines.flow.SharedFlow
 import java.util.EnumSet
+
 @Composable
 fun MusicList(
     modifier: Modifier = Modifier,

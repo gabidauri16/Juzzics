@@ -1,4 +1,4 @@
-package com.example.juzzics.features.musics.ui
+package com.example.juzzics.features.musics.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -1,23 +1,24 @@
 package com.example.juzzics.features.musics.ui
 
 import android.app.Application
-import android.content.ContentUris
 import android.media.MediaPlayer
-import android.provider.MediaStore
-import android.util.Log
+import com.example.juzzics.common.base.extensions.mapList
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.BaseViewModel
 import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
-import com.example.juzzics.common.base.extensions.mapList
 import com.example.juzzics.features.musics.domain.usecases.GetAllLocalMusicFilesUseCase
+import com.example.juzzics.features.musics.domain.usecases.vmLogics.PlayMusicLogic
+import com.example.juzzics.features.musics.domain.usecases.vmLogics.PlayNextOrPrevLogic
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import com.example.juzzics.features.musics.ui.model.toUi
 
 
 class MusicVM(
+    private val context: Application,
     getAllLocalMusicFilesUseCase: GetAllLocalMusicFilesUseCase,
-    private val context: Application
+    private val playMusicLogic: PlayMusicLogic,
+    private val playNextOrPrevLogic: PlayNextOrPrevLogic
 ) : BaseViewModel(
     states = mutableMapOf<String, Any>(
         MUSIC_LIST to ViewState<List<MusicFileUi>>(),
@@ -36,76 +37,14 @@ class MusicVM(
     }
 
     init {
-        Log.d("myLog", "init MusicVm")
         launch { call(getAllLocalMusicFilesUseCase().mapList { it.toUi() }, MUSIC_LIST) }
     }
 
-    private fun playMusic(musicFile: MusicFileUi?) {
-        val mediaPlayer = MEDIA_PLAYER.state<MediaPlayer>()
-        val musicList = MUSIC_LIST.state<List<MusicFileUi>>()
-        val clickedMusic = CLICKED_MUSIC.state<MusicFileUi>()
-        fun onSameMusicCLicked() {
-            if (mediaPlayer?.isPlaying == true) {
-                mediaPlayer.pause()
-                IS_PLAYING.setValue(false)
-            } else {
-                mediaPlayer?.start()
-                IS_PLAYING.setValue(true)
-            }
-        }
+    private fun playMusic(musicFile: MusicFileUi?) = playMusicLogic(this, musicFile, context)
 
-        fun onNewMusicClicked() {
-            musicFile?.let {
-                mediaPlayer?.stop()
-                mediaPlayer?.reset()
-                MediaPlayer.create(
-                    context, ContentUris.withAppendedId(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, musicFile.id
-                    )
-                ) saveIn MEDIA_PLAYER
-                CLICKED_MUSIC.setValue(musicFile)
-                musicList?.map {
-                    if (it != musicFile) it.copy(isPlaying = false)
-                    else it.copy(isPlaying = true)
-                } saveIn MUSIC_LIST
-                IS_PLAYING.setValue(true)
-                MEDIA_PLAYER.state<MediaPlayer>()?.apply {
-                    setOnCompletionListener { playNextOrPrev(true) }
-                    start()
-                }
-            }
-        }
-        if (musicFile == clickedMusic) {
-            onSameMusicCLicked()
-        } else {
-            onNewMusicClicked()
-        }
-    }
 
-    private fun playNextOrPrev(next: Boolean) {
-        val list = MUSIC_LIST.state<List<MusicFileUi>>()
-        val curIndex = list?.indexOf(CLICKED_MUSIC.state<MusicFileUi>()?.copy(isPlaying = true))
-        curIndex?.let {
-            if (next) {
-                if (it + 1 > list.size - 1) 0 else it + 1
-            } else {
-                if (it - 1 < 0) list.size - 1 else it - 1
-            }
-        }?.also {
-            onAction(PlayMusicAction(list[it]))
-            val pos = if (next) {
-                if (it == 0) 0 else it - 1
-            } else {
-                when (it) {
-                    0 -> 0
-                    list.size -> list.size - 1
-                    else -> it - 1
-                }
-            }
-            SCROLL_POSITION.setValue(pos)
-            ScrollToPositionUiEvent(pos).emit()
-        }
-    }
+    private fun playNextOrPrev(next: Boolean) = playNextOrPrevLogic(this, next)
+
 
     private fun seekTo(position: Float) {
         val mediaPlayer = MEDIA_PLAYER.state<MediaPlayer>()
