@@ -6,7 +6,7 @@ import android.media.MediaPlayer
 import android.provider.MediaStore
 import com.example.juzzics.common.base.extensions.andWith
 import com.example.juzzics.common.base.viewModel.ViewModelsLogic
-import com.example.juzzics.features.musics.ui.MusicVM
+import com.example.juzzics.features.musics.ui.vm.MusicVM
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 
 

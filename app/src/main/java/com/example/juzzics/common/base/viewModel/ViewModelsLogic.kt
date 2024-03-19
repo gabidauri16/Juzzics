@@ -7,6 +7,6 @@ import kotlinx.coroutines.launch
  * subtypes are able to states same way as if it was done from ViewModel itself */
 interface ViewModelsLogic
 
-/**to be able to emit event from [ViewModelsLogic]*/
+/** to be able to emit event from [ViewModelsLogic]*/
 context (BaseViewModel, ViewModelsLogic)
 fun <T : UiEvent> T.emit() = viewModelScope.launch { uiEvent.emit(this@emit) }

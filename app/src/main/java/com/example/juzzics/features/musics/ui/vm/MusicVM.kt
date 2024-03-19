@@ -1,7 +1,8 @@
-package com.example.juzzics.features.musics.ui
+package com.example.juzzics.features.musics.ui.vm
 
 import android.app.Application
 import android.media.MediaPlayer
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.juzzics.common.base.extensions.mapList
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.BaseViewModel
@@ -47,11 +48,11 @@ class MusicVM(
 
 
     private fun seekTo(position: Float) {
-        val mediaPlayer = MEDIA_PLAYER.state<MediaPlayer>()
+        val mediaPlayer = MEDIA_PLAYER<MediaPlayer>()
         mediaPlayer?.seekTo((position * mediaPlayer.duration.toFloat()).toInt())
     }
 
-    private fun playOrPause() = playMusic(CLICKED_MUSIC.state())
+    private fun playOrPause() = playMusic(CLICKED_MUSIC())
 
     override fun onAction(action: Action) {
         when (action) {
@@ -60,7 +61,12 @@ class MusicVM(
             is PlayPrevAction -> playNextOrPrev(false)
             is SeekToAction -> seekTo(action.position)
             is PlayOrPauseAction -> playOrPause()
+            is OnDragEndAction -> onDragEnd(action.list)
         }
+    }
+
+    private fun onDragEnd(list: SnapshotStateList<MusicFileUi>) {
+        MUSIC_LIST.setValue(list.toList())
     }
 
     data class PlayMusicAction(val music: MusicFileUi) : Action
@@ -68,6 +74,7 @@ class MusicVM(
     object PlayNextAction : Action
     object PlayPrevAction : Action
     object PlayOrPauseAction : Action
+    data class OnDragEndAction(val list: SnapshotStateList<MusicFileUi>) : Action
 
     data class ScrollToPositionUiEvent(val position: Int) : UiEvent
 }

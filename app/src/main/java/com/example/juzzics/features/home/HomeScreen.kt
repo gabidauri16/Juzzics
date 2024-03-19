@@ -15,6 +15,7 @@ import com.example.juzzics.common.base.extensions.with2
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
+import com.example.juzzics.common.base.viewModel.invoke
 import com.example.juzzics.common.base.viewModel.listen
 import com.example.juzzics.common.base.viewModel.state
 import kotlinx.coroutines.flow.SharedFlow
@@ -36,7 +37,7 @@ fun HomeScreen(
         }
         Surface {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = TEST.state() ?: "Home Screen", modifier = Modifier.clickable {
+                Text(text = TEST() ?: "Home Screen", modifier = Modifier.clickable {
                     onAction(HomeVM.CallAction)
                 })
             }

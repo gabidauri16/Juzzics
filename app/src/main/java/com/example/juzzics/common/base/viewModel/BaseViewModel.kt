@@ -38,13 +38,13 @@ abstract class BaseViewModel(
         emitLoadingAction: Boolean = true,
         emitErrorMsgAction: Boolean = false,
         propagateCancellationException: Boolean = false,
-        onStart: (() -> Unit)? = null,
+        onStart: (CoroutineScope.() -> Unit)? = null,
         onFinish: (() -> Unit)? = null,
         onException: ((Exception) -> Unit)? = null,
         block: suspend CoroutineScope.() -> Unit,
     ): Job {
         return viewModelScope.launch {
-            onStart?.invoke()
+            onStart?.invoke(this)
             if (emitLoadingAction) emitEvent(UiEvent.Loading())
             try {
                 block.invoke(this)
@@ -54,7 +54,8 @@ abstract class BaseViewModel(
                 handleException(e, emitErrorMsgAction, propagateCancellationException)
             }
             if (emitLoadingAction) emitEvent(UiEvent.Loading(false))
-            onFinish?.invoke()
+        }.apply {
+            invokeOnCompletion { onFinish?.invoke() }
         }
     }
 
@@ -127,4 +128,5 @@ abstract class BaseViewModel(
 
     /** returns state data by stateKey */
     fun <T> String.state() = stateList[this]?.takeAs<T>()
+    operator fun <T> String.invoke() = stateList[this]?.takeAs<T>()
 }
