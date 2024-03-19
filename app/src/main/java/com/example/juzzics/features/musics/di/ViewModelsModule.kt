@@ -6,6 +6,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelsModule = module {
-    viewModel { MusicVM(get(), get(), get(), get()) }
+    viewModel { MusicVM(get(), get()) }
     viewModel { HomeVM() }
 }

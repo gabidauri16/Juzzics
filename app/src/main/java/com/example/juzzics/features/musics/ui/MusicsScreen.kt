@@ -63,13 +63,14 @@ import com.example.juzzics.common.uiComponents.dragable.ReorderableList
 import com.example.juzzics.features.musics.ui.components.MusicProgress
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import com.example.juzzics.features.musics.ui.vm.MusicVM
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import java.util.EnumSet
 
 @Composable
 fun MusicList(
     modifier: Modifier = Modifier,
-    musicFiles: List<MusicFileUi>?,
+    musicFiles: ImmutableList<MusicFileUi>?,
     listState: LazyListState,
     onDragEnd: (SnapshotStateList<MusicFileUi>) -> Unit,
     onItemClick: (MusicFileUi) -> Unit

@@ -9,20 +9,21 @@ import com.example.juzzics.common.base.viewModel.BaseViewModel
 import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
 import com.example.juzzics.features.musics.domain.usecases.GetAllLocalMusicFilesUseCase
-import com.example.juzzics.features.musics.ui.vm.logics.PlayMusicLogic
-import com.example.juzzics.features.musics.ui.vm.logics.PlayNextOrPrevLogic
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import com.example.juzzics.features.musics.ui.model.toUi
+import com.example.juzzics.features.musics.ui.vm.logics.onDragEnd
+import com.example.juzzics.features.musics.ui.vm.logics.playMusicLogic
+import com.example.juzzics.features.musics.ui.vm.logics.playNextOrPrevLogic
+import com.example.juzzics.features.musics.ui.vm.logics.seekTo
+import kotlinx.collections.immutable.ImmutableList
 
 
 class MusicVM(
     private val context: Application,
     getAllLocalMusicFilesUseCase: GetAllLocalMusicFilesUseCase,
-    private val playMusicLogic: PlayMusicLogic,
-    private val playNextOrPrevLogic: PlayNextOrPrevLogic
 ) : BaseViewModel(
     states = mutableMapOf<String, Any>(
-        MUSIC_LIST to ViewState<List<MusicFileUi>>(),
+        MUSIC_LIST to ViewState<ImmutableList<MusicFileUi>>(),
         MEDIA_PLAYER to ViewState<MediaPlayer>(),
         CLICKED_MUSIC to ViewState<MusicFileUi>(),
         IS_PLAYING to ViewState<Boolean>(),
@@ -41,32 +42,15 @@ class MusicVM(
         launch { call(getAllLocalMusicFilesUseCase().mapList { it.toUi() }, MUSIC_LIST) }
     }
 
-    private fun playMusic(musicFile: MusicFileUi?) = playMusicLogic(this, musicFile, context)
-
-
-    private fun playNextOrPrev(next: Boolean) = playNextOrPrevLogic(this, next)
-
-
-    private fun seekTo(position: Float) {
-        val mediaPlayer = MEDIA_PLAYER<MediaPlayer>()
-        mediaPlayer?.seekTo((position * mediaPlayer.duration.toFloat()).toInt())
-    }
-
-    private fun playOrPause() = playMusic(CLICKED_MUSIC())
-
     override fun onAction(action: Action) {
         when (action) {
-            is PlayMusicAction -> playMusic(action.music)
-            is PlayNextAction -> playNextOrPrev(true)
-            is PlayPrevAction -> playNextOrPrev(false)
+            is PlayMusicAction -> playMusicLogic(action.music, context)
+            is PlayNextAction -> playNextOrPrevLogic(true)
+            is PlayPrevAction -> playNextOrPrevLogic(false)
             is SeekToAction -> seekTo(action.position)
-            is PlayOrPauseAction -> playOrPause()
+            is PlayOrPauseAction -> playMusicLogic(CLICKED_MUSIC(), context)
             is OnDragEndAction -> onDragEnd(action.list)
         }
-    }
-
-    private fun onDragEnd(list: SnapshotStateList<MusicFileUi>) {
-        MUSIC_LIST.setValue(list.toList())
     }
 
     data class PlayMusicAction(val music: MusicFileUi) : Action

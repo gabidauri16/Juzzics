@@ -34,7 +34,7 @@ abstract class BaseViewModel(
      *  also handles to emit message(or Error) and loading Actions.
      *  @see call
      * */
-    protected fun launch(
+    fun launch(
         emitLoadingAction: Boolean = true,
         emitErrorMsgAction: Boolean = false,
         propagateCancellationException: Boolean = false,
@@ -82,7 +82,7 @@ abstract class BaseViewModel(
      *  parameter: [stateKey] - takes index of corresponding ViewState from States.
      *  @see states
      * */
-    protected suspend inline fun <reified T : Any?> CoroutineScope.call(
+    suspend inline fun <reified T : Any?> CoroutineScope.call(
         response: Result<T>, stateKey: String,
         onError: (Throwable?) -> Unit = {},
         onSuccess: (Result<T>) -> Unit = {},
@@ -118,10 +118,10 @@ abstract class BaseViewModel(
 
 
     /** launches a coroutine and emits Action */
-    protected fun <T : UiEvent> T.emit() = viewModelScope.launch { uiEvent.emit(this@emit) }
+    fun <T : UiEvent> T.emit() = viewModelScope.launch { uiEvent.emit(this@emit) }
 
     /** use inside coroutineScope to emit Action */
-    protected suspend fun emitEvent(uiEvent: UiEvent) = this.uiEvent.emit(uiEvent)
+    suspend fun emitEvent(uiEvent: UiEvent) = this.uiEvent.emit(uiEvent)
 
     /** returns state data by stateKey */
     fun <T> String.typeOf() = stateList[this]?.takeAs<T>()

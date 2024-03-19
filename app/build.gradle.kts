@@ -87,5 +87,7 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.2.2")
 
-    implementation ("com.google.code.gson:gson:2.10")
+    implementation("com.google.code.gson:gson:2.10")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 }
