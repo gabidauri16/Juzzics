@@ -12,9 +12,9 @@ import kotlinx.collections.immutable.toImmutableList
 
 fun MusicVM.playMusicLogic(musicFile: MusicFileUi?, context: Application) {
     this.andWith(MusicVM) {
-        val mediaPlayer = MEDIA_PLAYER.state<MediaPlayer>()
-        val musicList = MUSIC_LIST.state<ImmutableList<MusicFileUi>>()
-        val clickedMusic = CLICKED_MUSIC.state<MusicFileUi>()
+        val mediaPlayer = MEDIA_PLAYER<MediaPlayer>()
+        val musicList = MUSIC_LIST<ImmutableList<MusicFileUi>>()
+        val clickedMusic = CLICKED_MUSIC<MusicFileUi>()
         fun onSameMusicCLicked() {
             if (mediaPlayer?.isPlaying == true) {
                 mediaPlayer.pause()
@@ -36,8 +36,7 @@ fun MusicVM.playMusicLogic(musicFile: MusicFileUi?, context: Application) {
                 ) saveIn MEDIA_PLAYER
                 CLICKED_MUSIC.setValue(musicFile)
                 musicList?.map {
-                    if (it != musicFile) it.copy(isPlaying = false)
-                    else it.copy(isPlaying = true)
+                    it.copy(isPlaying = it.id == musicFile.id)
                 }?.toImmutableList() saveIn MUSIC_LIST
                 IS_PLAYING.setValue(true)
                 MEDIA_PLAYER.state<MediaPlayer>()?.apply {
@@ -46,7 +45,7 @@ fun MusicVM.playMusicLogic(musicFile: MusicFileUi?, context: Application) {
                 }
             }
         }
-        if (musicFile == clickedMusic) {
+        if (musicFile?.id == clickedMusic?.id) {
             onSameMusicCLicked()
         } else {
             onNewMusicClicked()

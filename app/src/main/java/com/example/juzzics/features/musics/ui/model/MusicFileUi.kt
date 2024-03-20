@@ -15,7 +15,8 @@ data class MusicFileUi(
     val data: String?,
     val duration: Long,
     val icon: Uri,
-    val isPlaying: Boolean = false
+    val isPlaying: Boolean = false,
+    val isDragged: Boolean = false
 ) : Parcelable
 
 fun MusicFileDomain.toUi() = MusicFileUi(id, title, artist, data, duration, icon, isPlaying)

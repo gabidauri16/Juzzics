@@ -2,7 +2,6 @@ package com.example.juzzics
 
 import android.app.Application
 import com.example.juzzics.features.musics.di.localDataModule
-import com.example.juzzics.features.musics.di.logicsModule
 import com.example.juzzics.features.musics.di.repoModule
 import com.example.juzzics.features.musics.di.useCasesModule
 import com.example.juzzics.features.musics.di.viewModelsModule
@@ -16,7 +15,7 @@ class JuzzicsApp : Application() {
             androidContext(applicationContext)
             modules(
                 listOf(
-                    localDataModule, repoModule, useCasesModule, viewModelsModule, logicsModule
+                    localDataModule, repoModule, useCasesModule, viewModelsModule
                 )
             )
         }

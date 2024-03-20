@@ -1,13 +1,17 @@
 package com.example.juzzics.common.uiComponents.dragable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListItemInfo
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,25 +20,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.juzzics.features.musics.ui.components.MusicListItem
-import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <T : Any> ReorderableList(
+    modifier: Modifier,
     list: SnapshotStateList<T>,
-    onClick: (T) -> Unit,
+    lazyListState: LazyListState,
     scrollThreshold: Dp = 32.dp,
-    onDragEnd: (SnapshotStateList<T>) -> Unit
+    onDragEnd: (SnapshotStateList<T>) -> Unit,
+    onClick: (T) -> Unit,
+    content: @Composable (T) -> Unit
 ) {
-    val lazyListState = rememberLazyListState()
-
     var initiallyDraggedElement by remember { mutableStateOf<LazyListItemInfo?>(null) }
+
+    var draggedItem by remember { mutableStateOf<T?>(null) }
 
     var currentIndexOfDraggedItem by remember { mutableStateOf<Int?>(null) }
 
@@ -49,12 +55,12 @@ fun <T : Any> ReorderableList(
     fun resetDragInfo() {
         currentIndexOfDraggedItem = null
         initiallyDraggedElement = null
+        draggedItem = null
         draggedDistance = 0f
         calculatedOffset = 0f
     }
-//    Column() {
     LazyColumn(
-        modifier = Modifier.pointerInput(Unit) {
+        modifier = modifier.pointerInput(Unit) {
             detectDragGesturesAfterLongPress(
                 onDrag = { change, offset ->
                     change.consume()
@@ -85,7 +91,6 @@ fun <T : Any> ReorderableList(
                                 )
                             }
                         }
-                        println(draggedDistance)
                         initialElement?.let { hovered ->
                             lazyListState.layoutInfo.visibleItemsInfo
                                 .filterNot { comparedItem ->
@@ -118,6 +123,7 @@ fun <T : Any> ReorderableList(
                         ?.let {
                             currentIndexOfDraggedItem = it.index
                             initiallyDraggedElement = it
+                            draggedItem = list[it.index]
                         }
                 },
                 onDragEnd = {
@@ -134,26 +140,22 @@ fun <T : Any> ReorderableList(
         itemsIndexed(list, key = { index, item -> item }) { index, item ->
             Column(
                 modifier = Modifier
+                    .clickable { onClick.invoke(item) }
                     .graphicsLayer {
                         translationY =
                             calculatedOffset.takeIf { index == currentIndexOfDraggedItem } ?: 0f
                     }
                     .let {
-                        if (index == currentIndexOfDraggedItem) it else it.animateItemPlacement()
+                        if (index == currentIndexOfDraggedItem) it
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.tertiaryContainer)
+                        else it.animateItemPlacement()
                     }) {
-                if (item is MusicFileUi) {
-                    (item as MusicFileUi).let {
-                        MusicListItem(
-                            it,
-                            onItemClick = onClick as (MusicFileUi) -> Unit
-                        )
-                    }
-                }
+                (if (index == currentIndexOfDraggedItem) draggedItem else item)?.let { content(it) }
             }
         }
 
     }
-//    }
 }
 
 fun <T> MutableList<T>.moveAt(oldIndex: Int, newIndex: Int) {

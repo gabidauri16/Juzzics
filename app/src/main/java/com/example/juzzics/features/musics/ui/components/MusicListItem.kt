@@ -1,7 +1,6 @@
 package com.example.juzzics.features.musics.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,12 +18,11 @@ import com.example.juzzics.common.base.extensions.toMusicDuration
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 
 @Composable
-fun MusicListItem(musicFile: MusicFileUi, onItemClick: (MusicFileUi) -> Unit) {
+fun MusicListItem(musicFile: MusicFileUi) {
     Column(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp)
             .clip(RoundedCornerShape(16.dp))
-            .clickable { onItemClick(musicFile) }
             .background(
                 if (musicFile.isPlaying) MaterialTheme.colorScheme.secondaryContainer
                 else MaterialTheme.colorScheme.background

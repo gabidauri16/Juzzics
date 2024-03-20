@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -30,10 +29,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
@@ -56,37 +53,17 @@ import com.example.juzzics.common.base.extensions.with2
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
+import com.example.juzzics.common.base.viewModel.invoke
 import com.example.juzzics.common.base.viewModel.listen
-import com.example.juzzics.common.base.viewModel.state
 import com.example.juzzics.common.uiComponents.SimpleFAB
 import com.example.juzzics.common.uiComponents.dragable.ReorderableList
+import com.example.juzzics.features.musics.ui.components.MusicListItem
 import com.example.juzzics.features.musics.ui.components.MusicProgress
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import com.example.juzzics.features.musics.ui.vm.MusicVM
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import java.util.EnumSet
-
-@Composable
-fun MusicList(
-    modifier: Modifier = Modifier,
-    musicFiles: ImmutableList<MusicFileUi>?,
-    listState: LazyListState,
-    onDragEnd: (SnapshotStateList<MusicFileUi>) -> Unit,
-    onItemClick: (MusicFileUi) -> Unit
-) {
-//    LazyColumn(modifier = modifier, state = listState) {
-//        musicFiles?.let {
-//            items(it) { musicFile ->
-//                MusicListItem(musicFile, onItemClick = onItemClick)
-//            }
-//        }
-//    }
-    val list = remember {
-        musicFiles?.toMutableStateList() ?: mutableStateListOf()
-    }
-    ReorderableList(list = list, onItemClick, onDragEnd = onDragEnd)
-}
 
 @OptIn(
     ExperimentalMotionApi::class, ExperimentalFoundationApi::class,
@@ -132,22 +109,27 @@ fun MusicsScreen(
                     debug = EnumSet.of(MotionLayoutDebugFlags.NONE),
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(MaterialTheme.colorScheme.background)
                         .onSizeChanged { size -> componentHeight = size.height.toFloat() }
                 ) {
-                    val clickedMusic = CLICKED_MUSIC.state<MusicFileUi>()
-                    val isPlaying = IS_PLAYING.state() ?: false
+                    val clickedMusic = CLICKED_MUSIC<MusicFileUi>()
+                    val isPlaying = IS_PLAYING() ?: false
+                    val list = MUSIC_LIST<ImmutableList<MusicFileUi>>()?.toMutableStateList()
+                        ?: remember { mutableStateListOf() }
 
-                    MusicList(
+                    ReorderableList(
                         modifier = Modifier.layoutId("music_list"),
-                        musicFiles = MUSIC_LIST.state(),
-                        listState = lazyListState,
-                        onDragEnd = {onAction(MusicVM.OnDragEndAction(it))}
-                    ) { onAction(MusicVM.PlayMusicAction(it)) }
+                        list = list,
+                        lazyListState = lazyListState,
+                        onDragEnd = { onAction(MusicVM.OnDragEndAction(it)) },
+                        onClick = { onAction(MusicVM.PlayMusicAction(it)) }
+                    ) {
+                        MusicListItem(it)
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.DarkGray)
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                             .swipeable(
                                 state = swipeAbleState,
                                 anchors = anchors,
@@ -189,7 +171,7 @@ fun MusicsScreen(
                     )
                     MusicProgress(
                         modifier = Modifier.layoutId("music_progress"),
-                        mediaPlayer = MEDIA_PLAYER.state(),
+                        mediaPlayer = MEDIA_PLAYER(),
                         seekTo = { onAction(MusicVM.SeekToAction(it)) })
 
                     SimpleFAB(
