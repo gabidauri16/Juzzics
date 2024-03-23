@@ -108,6 +108,11 @@ abstract class BaseViewModel(
         updateState(this, value)
     }
 
+    /** set value to a state by calling invoke() operator on "StateKey" String */
+    operator fun <T> String.invoke(value: T) {
+        updateState(this, value)
+    }
+
     /** set value to a state with corresponding "stateKey" by calling this function on value itself */
     infix fun <T> T.saveIn(stateKey: String) {
         updateState(stateKey, this)
@@ -128,5 +133,7 @@ abstract class BaseViewModel(
 
     /** returns state data by stateKey */
     fun <T> String.state() = stateList[this]?.takeAs<T>()
+
+    /** returns state data by calling invoke() operator on a stateKey */
     operator fun <T> String.invoke() = stateList[this]?.takeAs<T>()
 }

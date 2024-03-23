@@ -18,10 +18,10 @@ fun MusicVM.playMusicLogic(musicFile: MusicFileUi?, context: Application) {
         fun onSameMusicCLicked() {
             if (mediaPlayer?.isPlaying == true) {
                 mediaPlayer.pause()
-                IS_PLAYING.setValue(false)
+                IS_PLAYING(false)
             } else {
                 mediaPlayer?.start()
-                IS_PLAYING.setValue(true)
+                IS_PLAYING(true)
             }
         }
 
@@ -34,12 +34,12 @@ fun MusicVM.playMusicLogic(musicFile: MusicFileUi?, context: Application) {
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, musicFile.id
                     )
                 ) saveIn MEDIA_PLAYER
-                CLICKED_MUSIC.setValue(musicFile)
+                CLICKED_MUSIC(musicFile)
                 musicList?.map {
                     it.copy(isPlaying = it.id == musicFile.id)
                 }?.toImmutableList() saveIn MUSIC_LIST
-                IS_PLAYING.setValue(true)
-                MEDIA_PLAYER.state<MediaPlayer>()?.apply {
+                IS_PLAYING(true)
+                MEDIA_PLAYER<MediaPlayer>()?.apply {
                     setOnCompletionListener { onAction(MusicVM.PlayNextAction) }
                     start()
                 }
