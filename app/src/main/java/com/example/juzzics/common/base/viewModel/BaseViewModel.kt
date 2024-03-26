@@ -24,7 +24,7 @@ import kotlin.coroutines.cancellation.CancellationException
  *  corresponding state and also emit actions of loading and showingMessage(or error).
  *
  *  use [launch] in combination with [call] like this :
- *  launch { call(someRepository.getFirstTestData(), 0) }
+ *  launch { call(someRepository.getFirstTestData(), TEST) }
  *  ------
  *  to get State manually use invoke() operator on a StateKeyString without passing a parameter
  *  to set State manually do the same but this time pass a value as a parameter
@@ -106,7 +106,7 @@ abstract class BaseViewModel(
     /** makes serviceCall and updates corresponding State.
      *
      *  parameter: [response] - takes serviceCall that returns Result<YourServiceCallResponseModel>.
-     *  parameter: [stateKey] - takes index of corresponding ViewState from States.
+     *  parameter: [stateKey] - takes index of corresponding ViewState from [states].
      *  @see states
      * */
     suspend inline fun <reified T : Any?> CoroutineScope.call(
