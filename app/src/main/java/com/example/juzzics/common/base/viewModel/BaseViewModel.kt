@@ -14,7 +14,34 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
-
+/** every responseModel Type that a serviceCall returns and/or is used in the current ViewModel,
+ *  this [BaseViewModel] class takes it as a parameter a map of empty ViewStates for each model.
+ *
+ *  then it creates mutableStates for each viewState from the map.
+ *  @see BaseViewModel.stateList
+ *
+ *  also has helper functions to make requestCall and it handles to save received data in the
+ *  corresponding state and also emit actions of loading and showingMessage(or error).
+ *
+ *  use [launch] in combination with [call] like this :
+ *  launch { call(someRepository.getFirstTestData(), 0) }
+ *  ------
+ *  to get State manually use invoke() operator on a StateKeyString without passing a parameter
+ *  to set State manually do the same but this time pass a value as a parameter
+ *
+ *  also you can use for getters: [state],[typeOf]
+ *  or for setters: [setValue], [saveIn] [saveInStateOf]
+ *  ------
+ *  to get state outside a ViewModel use same invoke operator on a StateKeyString [com.example.juzzics.common.base.viewModel.invoke]
+ *  but only if you are in Context of [BaseState]
+ *
+ *  see other getters by remembering value in Composable, or outside a Composable context here: [BaseState]
+ *  ------
+ *  also you can emit [UiEvent]s to the Screens and collect them with [listen]
+ *  -----
+ *  use [Action] to send an Actions From Screen to the ViewModel
+ *  use [UiEvent] to send an UiEvents from ViewModel to the Screen
+ * */
 abstract class BaseViewModel(
     val states: Map<String, Any>
 ) : ViewModel() {
