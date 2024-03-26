@@ -17,7 +17,7 @@ import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
 import com.example.juzzics.common.base.viewModel.invoke
 import com.example.juzzics.common.base.viewModel.listen
-import com.example.juzzics.common.base.viewModel.state
+import com.example.juzzics.features.home.vm.HomeVM
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
