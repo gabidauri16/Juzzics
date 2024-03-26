@@ -1,8 +1,10 @@
-package com.example.juzzics.features.home
+package com.example.juzzics.features.home.vm
 
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.BaseViewModel
+import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.ViewState
+import com.example.juzzics.features.home.vm.logics.makeCall
 
 class HomeVM : BaseViewModel(
     states = mapOf(
@@ -19,10 +21,6 @@ class HomeVM : BaseViewModel(
         }
     }
 
-    private fun makeCall() {
-        launch { call(Result.success("Giorgi Gabidauri"), TEST) }
-    }
-
     object CallAction : Action
-
+    data class ToastMsg(val msg: String) : UiEvent
 }

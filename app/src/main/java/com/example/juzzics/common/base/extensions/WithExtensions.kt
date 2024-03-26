@@ -2,6 +2,7 @@ package com.example.juzzics.common.base.extensions
 
 import androidx.compose.runtime.Composable
 
+/**gives Composable context of two passed objects*/
 @Composable
 fun <First, Second> with2(
     first: First,
@@ -11,10 +12,11 @@ fun <First, Second> with2(
     block.invoke(first, second)
 }
 
-@Composable
+/**gives context of two passed objects*/
+
 fun <First, Second> First.andWith(
     second: Second,
-    block: @Composable context(First)Second.() -> Unit
+    block: context(First)Second.() -> Unit
 ) {
     block.invoke(this, second)
 }

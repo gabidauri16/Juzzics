@@ -18,6 +18,11 @@ context (BaseState)
 @Composable
 fun <T> String.state(): T? = remember { this@BaseState[this@state] }?.takeAs<T>()
 
+/** gets state by calling invoke() operator on a stateKey in Composable functions if in context of [BaseState]*/
+context (BaseState)
+@Composable
+operator fun <T> String.invoke(): T? = remember { this@BaseState[this@invoke] }?.takeAs<T>()
+
 
 /** gets state by stateKey in normal functions*/
 fun <T> Map<String, MutableState<ViewState<Any>>>.getStateValue(stateKey: String) =
