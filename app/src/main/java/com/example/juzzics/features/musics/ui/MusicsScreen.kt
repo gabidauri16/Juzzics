@@ -52,7 +52,7 @@ import com.example.juzzics.common.base.extensions.returnIfNull
 import com.example.juzzics.common.base.extensions.with2
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.UiEvent
-import com.example.juzzics.common.base.viewModel.ViewState
+import com.example.juzzics.common.base.viewModel.State
 import com.example.juzzics.common.base.viewModel.invoke
 import com.example.juzzics.common.base.viewModel.listen
 import com.example.juzzics.common.uiComponents.SimpleFAB
@@ -71,7 +71,7 @@ import java.util.EnumSet
 )
 @Composable
 fun MusicsScreen(
-    states: Map<String, MutableState<ViewState<Any>>>,
+    states: Map<String, MutableState<State<Any>>>,
     uiEvent: SharedFlow<UiEvent>,
     onAction: (Action) -> Unit
 ) {

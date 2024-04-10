@@ -7,7 +7,7 @@ import com.example.juzzics.common.base.extensions.mapList
 import com.example.juzzics.common.base.viewModel.Action
 import com.example.juzzics.common.base.viewModel.BaseViewModel
 import com.example.juzzics.common.base.viewModel.UiEvent
-import com.example.juzzics.common.base.viewModel.ViewState
+import com.example.juzzics.common.base.viewModel.State
 import com.example.juzzics.features.musics.domain.usecases.GetAllLocalMusicFilesUseCase
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import com.example.juzzics.features.musics.ui.model.toUi
@@ -23,11 +23,11 @@ class MusicVM(
     getAllLocalMusicFilesUseCase: GetAllLocalMusicFilesUseCase,
 ) : BaseViewModel(
     states = mutableMapOf<String, Any>(
-        MUSIC_LIST to ViewState<ImmutableList<MusicFileUi>>(),
-        MEDIA_PLAYER to ViewState<MediaPlayer>(),
-        CLICKED_MUSIC to ViewState<MusicFileUi>(),
-        IS_PLAYING to ViewState<Boolean>(),
-        SCROLL_POSITION to ViewState<Int>(),
+        MUSIC_LIST to State<ImmutableList<MusicFileUi>>(),
+        MEDIA_PLAYER to State<MediaPlayer>(),
+        CLICKED_MUSIC to State<MusicFileUi>(),
+        IS_PLAYING to State(false),
+        SCROLL_POSITION to State<Int>(),
     )
 ) {
     companion object {

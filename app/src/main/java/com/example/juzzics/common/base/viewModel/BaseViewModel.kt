@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.juzzics.common.base.extensions.isNotNull
 import com.example.juzzics.common.base.extensions.postChange
 import com.example.juzzics.common.base.extensions.takeAs
 import kotlinx.coroutines.CoroutineScope
@@ -54,8 +55,8 @@ abstract class BaseViewModel(
 
     /** creates MutableState<ViewState<EachModel>> for each element of the states.
      * for Compose */
-    private inline fun <reified T : Any?> T.createState(): MutableState<ViewState<T>> =
-        mutableStateOf(ViewState())
+    private inline fun <reified T : Any?> T.createState(): MutableState<State<T>> =
+        mutableStateOf(State(if (this.isNotNull()) (this as State<T>).data else null))
 
     /** launches coroutine in viewModelScope. used in combination with call function to make requestCalls.
      *  also handles to emit message(or Error) and loading Actions.

@@ -1,7 +1,7 @@
 package com.example.juzzics.common.extensions
 
 import androidx.compose.runtime.MutableState
-import com.example.juzzics.common.base.viewModel.ViewState
+import com.example.juzzics.common.base.viewModel.State
 import com.example.juzzics.common.base.viewModel.BaseViewModel
 
 /** post change to a mutableState of something,
@@ -14,7 +14,7 @@ inline fun <T> MutableState<T>.postChange(copy: T.() -> T) {
  * @see BaseViewModel.stateList
  * */
 @Suppress("UNCHECKED_CAST")
-fun <T> MutableState<ViewState<Any>>.takeAs(): T? = try {
+fun <T> MutableState<State<Any>>.takeAs(): T? = try {
     this.value.data as T
 } catch (e: Exception) {
     null

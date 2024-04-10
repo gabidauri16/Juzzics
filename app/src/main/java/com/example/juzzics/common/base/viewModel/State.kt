@@ -5,4 +5,4 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Parcelize
-data class ViewState<T : Any?>(val data: @RawValue T? = null) : Parcelable
+data class State<T : Any?>(val data: @RawValue T? = null) : Parcelable
