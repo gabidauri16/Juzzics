@@ -24,7 +24,9 @@ context (BaseState)
 operator fun <T> String.invoke(): T? = remember { this@BaseState[this@invoke] }?.takeAs<T>()
 
 /** gets state by calling on a stateKey in Composable functions if in context of [BaseState]
- * @return value or Blank string if value is null */
+ * @return value or Blank string if value is null
+ *
+ * @exception DOES_NOT use with invoke() or any state getter*/
 context (BaseState)
 @Composable
 fun String.stateOrBlank(): String =
@@ -33,19 +35,22 @@ fun String.stateOrBlank(): String =
 /** gets State<String> by calling [!] or - not() operator on a stateKey in Composable functions if in context of [BaseState]
  * @return value or Blank string if value is null
  *
- * @sample !STATE_KEY_STRING */
+ * @sample !STATE_KEY_STRING
+ * @exception DOES_NOT use with invoke() or any state getter*/
 context (BaseState)
 @Composable
 operator fun String.not(): String = remember { this@BaseState[this@not] }?.takeAs<String>() ?: ""
 
 /** gets state by calling on a stateKey in Composable functions if in context of [BaseState]
- * @return value or 0L if value is null*/
+ * @return value or 0L if value is null
+ * @exception DOES_NOT use with invoke() or any state getter*/
 context (BaseState)
 @Composable
 fun String.stateOrZero(): Long = remember { this@BaseState[this@stateOrZero] }?.takeAs<Long>() ?: 0L
 
 /** gets state by calling on a stateKey in Composable functions if in context of [BaseState]
- * @return value or false if  value is null*/
+ * @return value or false if value is null
+ * @exception DOES_NOT use with invoke() or any state getter*/
 context (BaseState)
 @Composable
 fun String.stateOrFalse(): Boolean =
