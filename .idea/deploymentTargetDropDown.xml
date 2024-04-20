@@ -5,6 +5,9 @@
       <entry key="GreetingPreview">
         <State />
       </entry>
+      <entry key="LoaderPreview">
+        <State />
+      </entry>
       <entry key="NowPlayingPreview">
         <State />
       </entry>

@@ -8,7 +8,7 @@ import com.example.juzzics.features.home.vm.logics.makeCall
 
 class HomeVM : BaseViewModel(
     states = mapOf(
-        TEST to State<String>(),
+        TEST to State("make a call"),
         TEXT_FIELD_VALUE to State("gabo")
     )
 ) {

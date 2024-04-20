@@ -27,7 +27,7 @@ class MusicVM(
         MEDIA_PLAYER to State<MediaPlayer>(),
         CLICKED_MUSIC to State<MusicFileUi>(),
         IS_PLAYING to State(false),
-        SCROLL_POSITION to State<Int>(),
+        SCROLL_POSITION to State(0),
     )
 ) {
     companion object {
