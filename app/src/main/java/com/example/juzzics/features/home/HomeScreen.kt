@@ -12,6 +12,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.juzzics.common.base.BaseHandler
 import com.example.juzzics.common.base.extensions.with2
 import com.example.juzzics.common.base.viewModel.Action
@@ -20,7 +21,14 @@ import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.listen
 import com.example.juzzics.common.base.viewModel.not
 import com.example.juzzics.features.home.vm.HomeVM
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+
+@Preview
+@Composable
+fun homePreview() {
+    HomeScreen(states = mapOf(), uiEvent = MutableSharedFlow(), onAction = {})
+}
 
 @Composable
 fun HomeScreen(
