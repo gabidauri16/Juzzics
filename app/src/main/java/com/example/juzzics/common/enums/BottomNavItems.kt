@@ -29,9 +29,9 @@ enum class BottomNavItems(
         route = Screen.MusicsScreen.route
     ),
     Playlists(
-        title = "Playlists",
+        title = "FetchLyrics",
         selectedIcon = Icons.AutoMirrored.Filled.List,
         unSelectedIcon = Icons.AutoMirrored.Outlined.List,
-        route = Screen.PlaylistsScreen.route
+        route = Screen.FetchLyricsScreen.route
     )
 }

@@ -5,7 +5,7 @@ import com.example.juzzics.features.musics.ui.vm.MusicVM
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val viewModelsModule = module {
+val musicViewModelsModule = module {
     viewModel { MusicVM(get(), get()) }
     viewModel { HomeVM() }
 }

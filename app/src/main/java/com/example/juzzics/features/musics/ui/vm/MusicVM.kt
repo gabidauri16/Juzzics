@@ -11,6 +11,7 @@ import com.example.juzzics.common.base.viewModel.State
 import com.example.juzzics.features.musics.domain.usecases.GetAllLocalMusicFilesUseCase
 import com.example.juzzics.features.musics.ui.model.MusicFileUi
 import com.example.juzzics.features.musics.ui.model.toUi
+import com.example.juzzics.features.musics.ui.vm.logics.findLyrics
 import com.example.juzzics.features.musics.ui.vm.logics.onDragEnd
 import com.example.juzzics.features.musics.ui.vm.logics.playMusicLogic
 import com.example.juzzics.features.musics.ui.vm.logics.playNextOrPrevLogic
@@ -50,6 +51,7 @@ class MusicVM(
             is SeekToAction -> seekTo(action.position)
             is PlayOrPauseAction -> playMusicLogic(CLICKED_MUSIC(), context)
             is OnDragEndAction -> onDragEnd(action.list)
+            is FindLyricsAction -> findLyrics()
         }
     }
 
@@ -58,7 +60,7 @@ class MusicVM(
     object PlayNextAction : Action
     object PlayPrevAction : Action
     object PlayOrPauseAction : Action
+    object FindLyricsAction : Action
     data class OnDragEndAction(val list: SnapshotStateList<MusicFileUi>) : Action
-
     data class ScrollToPositionUiEvent(val position: Int) : UiEvent
 }

@@ -10,9 +10,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -24,6 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -85,7 +92,7 @@ fun RowScope.ShowNavBar(
     rootNavController: NavHostController,
     navBackStackEntry: NavBackStackEntry?
 ) {
-    BottomNavItems.values().forEach { item ->
+    BottomNavItems.entries.forEach { item ->
         val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
         NavigationBarItem(selected = isSelected,
             onClick = {
@@ -102,5 +109,26 @@ fun RowScope.ShowNavBar(
                     contentDescription = item.title
                 )
             })
+    }
+}
+
+val myList = listOf("Scroll")
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview
+@Composable
+fun Pager() {
+    val lazyListState = rememberLazyListState()
+    val snapScrollBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
+    Box(Modifier.fillMaxWidth()) {
+        LazyRow(
+            modifier = Modifier
+                .padding(horizontal = 16.dp) // Adjust padding as needed
+            , flingBehavior = snapScrollBehavior
+        ) {
+            item(20) {
+                Text(text = "Item 1")
+            }
+        }
     }
 }

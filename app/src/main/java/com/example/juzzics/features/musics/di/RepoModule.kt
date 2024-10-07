@@ -6,6 +6,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 
-val repoModule = module {
+val musicRepoModule = module {
     single { MusicRepoImpl(get()) } bind MusicRepo::class
 }

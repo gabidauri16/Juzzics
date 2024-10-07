@@ -164,4 +164,19 @@ abstract class BaseViewModel(
 
     /** returns state data by calling invoke() operator on a stateKey */
     operator fun <T> String.invoke() = stateList[this]?.takeAs<T>()
+
+    /** gets State<String> by calling [!] or - not() operator on a stateKey if in context of [BaseState]
+     * @return value or Blank string if value is null
+     *
+     * @sample !STATE_KEY_STRING
+     * @exception DOES_NOT use with invoke() or any state getter*/
+    operator fun String.not(): String = stateList[this@not]?.takeAs<String>() ?: ""
+
+
+    /** gets state by calling on a stateKey in Composable functions if in context of [BaseState]
+     * @return value or Blank string if value is null
+     *
+     * @exception DOES_NOT use with invoke() or any state getter*/
+    fun String.stateOrBlank(): String = stateList[this@stateOrBlank]?.takeAs<String>() ?: ""
+
 }

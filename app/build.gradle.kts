@@ -90,4 +90,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }

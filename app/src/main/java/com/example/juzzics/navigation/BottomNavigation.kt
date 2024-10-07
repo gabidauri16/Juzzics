@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.juzzics.features.home.HomeScreen
 import com.example.juzzics.features.home.vm.HomeVM
+import com.example.juzzics.features.lyrics.ui.FetchLyricsScreen
+import com.example.juzzics.features.lyrics.ui.vm.FetchLyricsVM
 import com.example.juzzics.features.musics.ui.vm.MusicVM
 import com.example.juzzics.features.musics.ui.MusicsScreen
 import com.example.juzzics.features.playlists.PlaylistsScreen
@@ -26,8 +28,10 @@ fun BottomNavigation(navController: NavHostController) {
                 onAction = vm::onAction
             )
         }
-        composable(Screen.PlaylistsScreen.route) {
-            PlaylistsScreen()
+        composable(Screen.FetchLyricsScreen.route) {
+//            PlaylistsScreen()
+            val vm: FetchLyricsVM = koinViewModel()
+            FetchLyricsScreen(states = vm.stateList, uiEvent = vm.uiEvent, onAction = vm::onAction)
         }
     }
 }

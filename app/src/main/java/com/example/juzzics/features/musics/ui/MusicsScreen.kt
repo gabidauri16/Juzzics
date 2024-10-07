@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,8 +52,8 @@ import com.example.juzzics.R
 import com.example.juzzics.common.base.extensions.returnIfNull
 import com.example.juzzics.common.base.extensions.with2
 import com.example.juzzics.common.base.viewModel.Action
-import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.State
+import com.example.juzzics.common.base.viewModel.UiEvent
 import com.example.juzzics.common.base.viewModel.invoke
 import com.example.juzzics.common.base.viewModel.listen
 import com.example.juzzics.common.uiComponents.SimpleFAB
@@ -191,6 +192,13 @@ fun MusicsScreen(
                         image = if (isPlaying) Icons.Filled.Warning else Icons.Filled.PlayArrow,
                         text = if (isPlaying) "Pause" else "Play"
                     ) { onAction(MusicVM.PlayOrPauseAction) }
+
+                    Text(
+                        modifier = Modifier
+                            .layoutId("find_lyrics")
+                            .clickable { onAction(MusicVM.FindLyricsAction) },
+                        text = "Find Lyrics"
+                    )
                 }
             }
         }
