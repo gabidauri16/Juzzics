@@ -16,14 +16,14 @@ fun <T> BaseState.getState(stateKey: String) =
     remember { this[stateKey] }?.takeAs<T>()
 
 /** gets state by stateKey in Composable functions if in context of [BaseState]*/
-context (BaseState)
+context (baseState: BaseState)
 @Composable
-fun <T> String.state(): T? = remember { this@BaseState[this@state] }?.takeAs<T>()
+fun <T> String.state(): T? = remember { baseState[this@state] }?.takeAs<T>()
 
 /** gets state by calling invoke() operator on a stateKey in Composable functions if in context of [BaseState]*/
-context (BaseState)
+context (baseState: BaseState)
 @Composable
-operator fun <T> String.invoke(): T? = remember { this@BaseState[this@invoke] }?.takeAs<T>()
+operator fun <T> String.invoke(): T? = remember { baseState[this@invoke] }?.takeAs<T>()
 
 
 // ---------------------- String Type State Getters  ----------------------
@@ -32,19 +32,19 @@ operator fun <T> String.invoke(): T? = remember { this@BaseState[this@invoke] }?
  * @return value or Blank string if value is null
  *
  * @exception DOES_NOT use with invoke() or any state getter*/
-context (BaseState)
+context (baseState: BaseState)
 @Composable
 fun String.stateOrBlank(): String =
-    remember { this@BaseState[this@stateOrBlank] }?.takeAs<String>() ?: ""
+    remember { baseState[this@stateOrBlank] }?.takeAs<String>() ?: ""
 
 /** gets State<String> by calling [!] or - not() operator on a stateKey in Composable functions if in context of [BaseState]
  * @return value or Blank string if value is null
  *
  * @sample !STATE_KEY_STRING
  * @exception DOES_NOT use with invoke() or any state getter*/
-context (BaseState)
+context (baseState: BaseState)
 @Composable
-operator fun String.not(): String = remember { this@BaseState[this@not] }?.takeAs<String>() ?: ""
+operator fun String.not(): String = remember { baseState[this@not] }?.takeAs<String>() ?: ""
 
 
 // ---------------------- Long Type State Getters  ----------------------
@@ -52,9 +52,9 @@ operator fun String.not(): String = remember { this@BaseState[this@not] }?.takeA
 /** gets state by calling on a stateKey in Composable functions if in context of [BaseState]
  * @return value or 0L if value is null
  * @exception DOES_NOT use with invoke() or any state getter*/
-context (BaseState)
+context (baseState: BaseState)
 @Composable
-fun String.stateOrZero(): Long = remember { this@BaseState[this@stateOrZero] }?.takeAs<Long>() ?: 0L
+fun String.stateOrZero(): Long = remember { baseState[this@stateOrZero] }?.takeAs<Long>() ?: 0L
 
 
 // ---------------------- Boolean Type State Getters  ----------------------
@@ -62,10 +62,10 @@ fun String.stateOrZero(): Long = remember { this@BaseState[this@stateOrZero] }?.
 /** gets state by calling on a stateKey in Composable functions if in context of [BaseState]
  * @return value or false if value is null
  * @exception DOES_NOT use with invoke() or any state getter*/
-context (BaseState)
+context (baseState: BaseState)
 @Composable
 fun String.stateOrFalse(): Boolean =
-    remember { this@BaseState[this@stateOrFalse] }?.takeAs<Boolean>() ?: false
+    remember { baseState[this@stateOrFalse] }?.takeAs<Boolean>() ?: false
 
 
 
@@ -76,5 +76,5 @@ fun <T> BaseState.getStateValue(stateKey: String) =
     this[stateKey]?.takeAs<T>()
 
 /** gets state by stateKey in normal functions if in context of [BaseState]*/
-context (BaseState)
-fun <T> String.stateValue() = this@BaseState[this@stateValue]?.takeAs<T>()
+context (baseState: BaseState)
+fun <T> String.stateValue() = baseState[this@stateValue]?.takeAs<T>()
